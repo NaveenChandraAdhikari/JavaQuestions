@@ -19,8 +19,10 @@ This section provides an overview of how Java code is translated into machine-ex
      Initially, the JVM uses an interpreter to execute bytecode. The interpreter processes each bytecode instruction one by one, allowing the program to start running quickly, albeit at a slower speed.
    
    - **Just-In-Time (JIT) Compiler**:  
-     To improve performance, the JVM uses the JIT compiler to optimize frequently executed bytecode sections (known as "hot spots"). These sections are compiled into native machine code for more efficient execution. 
-   
+     To improve performance, the JVM uses the JIT compiler to optimize frequently executed bytecode sections (known as "hot spots").
+Hotspots are nothing but those portion which need optimisation which executes a lot that needs optimisation eg.a for loop consist of a sum of  million condition but with the help of JIT they are converted to natural number sum formula for easier execution.
+These sections are compiled into native machine code for more efficient execution. 
+   *Performance doesnot depends upon compiler it is depend upon running of bytecode to machine code. 
    - **Optimized Native Code Execution**:  
      Once the bytecode is converted into native machine code by the JIT compiler, the JVM directly executes the optimized native code on the CPU, similar to how native applications run on a machine.
 
@@ -29,4 +31,9 @@ This section provides an overview of how Java code is translated into machine-ex
 - The Java Virtual Machine (JVM) interprets and/or compiles the bytecode into native machine code.
 - The JVM uses a combination of an interpreter and Just-In-Time (JIT) compiler for optimal performance, ensuring the bytecode is efficiently executed on the CPU.
 ![Java Code Execution Process](./Translate.png)
+
+**Credits :https://www.youtube.com/watch?v=G5a91WqNytI&t=1825s**
+
+
+
 
