@@ -28,5 +28,5 @@ This section provides an overview of how Java code is translated into machine-ex
 - The Java compiler (`javac`) translates the source code into platform-independent bytecode.
 - The Java Virtual Machine (JVM) interprets and/or compiles the bytecode into native machine code.
 - The JVM uses a combination of an interpreter and Just-In-Time (JIT) compiler for optimal performance, ensuring the bytecode is efficiently executed on the CPU.
-![Java Code Execution Process](./Screenshot from 2024-09-11 09-48-39.png)
+![Java Code Execution Process](./Translate.png)
 
