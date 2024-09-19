@@ -336,6 +336,7 @@ In essence, serialization is like taking a snapshot of an object and storing it 
 ```
 
 ![OutputStream need fileouputStream](./Ser.png)
+**NOTE:private and final field allowed during serialization/desiralisation and transient and static are not allowed they are ignored**
 
 ## Deserialization
  - Deserialization is precisely the opposite of serialization.With deserialization you start with a bytestream and recreate the object  you previously serialized in its original state.However you must have the definition of the object(you have to explicitly pass the class when recreating object) to successfully re-create it
@@ -348,7 +349,131 @@ in.close();
 fileIn.close();
 ```
 ![OutputStream need fileouputStream](./Desi.png)
+credits :https://www.youtube.com/watch?v=nUFoDfGl1II&t=68s
 
 
+![Serial](https://github.com/user-attachments/assets/5611c612-0450-4bcf-bfde-c4d98a81add4)
 
-   
+
+## Externalisation:
+![Ext](https://github.com/user-attachments/assets/0d8bccca-41c1-431d-bd71-6f6fb36268df)
+
+  
+![image](https://github.com/user-attachments/assets/32103a85-5961-4b49-814d-d275d9a4809a)
+![image](https://github.com/user-attachments/assets/c5c92af0-de12-462d-972b-f673585a9c57)
+
+## **Q:** Why to use char[] array over  a string for storing passwords in Java?
+- 1. Strings are Immutable:
+
+    - Strings in Java are immutable, meaning once created, their content cannot be changed.
+    If you store a password as a String, it stays in memory until garbage collection occurs, and since Strings are pooled for reuse, they might stay in memory longer, creating a security risk.
+    - With a char[], you can explicitly clear the array (e.g., by overwriting it with zeros) once the password is no longer needed, ensuring it is removed from memory immediately.
+
+- 2. Memory Safety:
+
+    If someone takes a memory dump of your program, a password stored as a String can be easily found in plain text.
+    By using a char[], you can overwrite the password, reducing the risk of it being exposed in memory.
+
+- 3. Log File Safety:
+
+    Strings are more prone to being accidentally printed in logs or system outputs.
+    Using a char[] avoids this, as arrays are typically printed as object references (e.g., [C@15db9742]), making it harder to leak the actual password.
+
+- 4. Java Recommendation:
+
+    Java itself recommends using char[] for password handling. For example, the method getPassword() in JPasswordField returns a char[], while its older version getText() (which returns a String) has been deprecated for security reasons.
+
+By using char[] for passwords, you gain more control over the data and reduce the chances of accidental exposure.
+
+**NOTE😄To convert override toString()method**
+
+## **Q:** Aggregation,Composition and Association(HAS-A) 
+**An association can be considered a generic term to indicate the relationship between two independent classes; the relationship may be one-to-one, one-to-many, or many-to-many, but it need not indicate ownership.**
+
+-- Association is nothing but the relationship between 2 classes : basically of 2 types: aggregation and composition
+   --aggregation is weak association or loose coupling i.e one object can live without another object
+   --composition is strong association i.e one object cannot live without another object
+
+EXAMPLE:) Driver and car ,both objects can exist independently this is aggregation,they HAS-A relationship but can live independetly
+```java
+public class Driver{
+   private Car car;
+}
+
+public class Teams{
+List<Plater>players;
+}  
+```
+Example :) Car engine cannot exist without car this is a composition relationship,both objects cannot exist independently.One object cannot exist without owner object;(TIGHT COUPLING)
+
+```java
+public class Car{
+private Engine engine
+}
+```
+FOR MORE:https://www.geeksforgeeks.org/association-composition-aggregation-java/
+
+## **Q:** Default Capacity Of ArrayList and difference between poll()and remove() ,also difference between ArrayList and Vector?
+ - Default capacity of ArrayList id 10
+ - poll():
+    - Returns the top element of the stack if the stack is not empty.
+    - If the stack is empty, returns null.
+    - Does not throw an exception if the stack is empty.
+- remove():
+    - Returns the top element of the stack if the stack is not empty.
+    - If the stack is empty, throws an EmptyStackException.
+
+Difference between ArrayList and Vector
+    - synchronization – The first major difference between these two. Vector is synchronized and ArrayList isn’t.
+    - size growth – Another difference between the two is the way they resize while reaching their capacity. The Vector doubles its size. In contrast, ArrayList increases only by half of its length
+    - iteration – And Vector can use Iterator and Enumeration to traverse over the elements. On the other hand, ArrayList can only use Iterator.
+    - performance – Largely due to synchronization, Vector operations are slower when compared to ArrayList
+    - framework – Also, ArrayList is a part of the Collections framework and was introduced in JDK 1.2. Meanwhile, Vector is present in the earlier versions of Java as a legacy class.
+
+    
+## **Q:**In Java, when using HashSet or HashMap with keys, especially when the key is an Integer, we use wrapper classes (like Integer) instead of primitive types (like int).why?
+
+ - 1. Generics Require Objects:
+
+    Both HashSet and HashMap are part of Java’s Collections Framework, which is based on generics.
+    Generics in Java work only with objects, not with primitive types. Since int is a primitive type, it cannot be used directly in a generic collection.
+    Wrapper classes like Integer allow primitives to be used as objects. So, when you want to use int in a HashMap or HashSet, you must use its wrapper class Integer.
+
+Example:
+
+```java
+
+HashMap<Integer, String> map = new HashMap<>();  // Valid
+HashMap<int, String> map = new HashMap<>();      // Invalid (won't compile)
+```
+ - 2. Autoboxing:
+
+    Java provides autoboxing, which automatically converts a primitive type (like int) to its corresponding wrapper class (like Integer), making it easier for the programmer.
+    This allows you to pass primitive values, and Java will internally convert them to objects, but under the hood, only the wrapper object (Integer) is used.
+
+Example:
+
+```java
+
+HashMap<Integer, String> map = new HashMap<>();
+map.put(1, "One");  // Autoboxing converts int 1 to Integer(1)
+```
+ - 3. Methods and Object Functionality:
+
+    Wrapper classes like Integer provide additional methods and functionality that primitives don’t have. For example, you can call Integer.compare(), Integer.hashCode(), and Integer.equals() methods, which are necessary for HashMap and HashSet to function properly (since they rely on hashCode() and equals() for key comparison).
+    Primitives like int don’t have methods, so they can’t be used in places where methods like hashCode() are required.
+
+ - 4. HashMap/HashSet Internals:
+
+    HashMap and HashSet rely on the hashCode() method to compute the position of a key in the hash table.
+    Since primitive types do not have methods, you need to use the wrapper class (Integer), which provides a proper hashCode() implementation.
+
+ - 5. Null Handling:
+
+    Wrapper classes like Integer can represent null values, while primitive types like int cannot. This is useful when working with HashMap keys, where you might want to allow null as a key.
+
+ Example:
+```java
+ HashMap<Integer, String> map = new HashMap<>();
+ map.put(null, "Null Key");  // Valid, as null is allowed for wrapper classes
+```
