@@ -477,3 +477,89 @@ map.put(1, "One");  // Autoboxing converts int 1 to Integer(1)
  HashMap<Integer, String> map = new HashMap<>();
  map.put(null, "Null Key");  // Valid, as null is allowed for wrapper classes
 ```
+## **Q:**When to use static and when to use final,also can we override those methods starting with these two keywords?
+
+   **FINAL**:
+   - A variable declared as final cannot be reassigned after value is set.
+   - A method declared as final cannot be overridden by any subclass.
+   - A class declared as final cannot be subclassed or extended
+   - No,a final method cannot be overridden in a subclass because the purpose of declaring a method as final is to prevent modification by inheritance
+  **STATIC**:
+     - A static variable belongs to a class rather than to instances of the class,it is shared among all instances of the class(multiple copies ban sakti hai).
+     - A method declared as static belongs to the class,not instances of the class.It can be called without creating an instances of the class.
+     - Static method cannot access instance variables or instance methods directly. They can only access static variables and other static methods.
+     - In java,only nested classes(inner classes) can be declared as static.A static neested class can be instatiated without creating an instance of the outer class.
+     - No,static methods cannot be overriden in the same sense as instance methods.Instead static methods can be hidden bt declaring a method with the same signature in a subclass.This is called method hiding.
+     - Example:
+```java
+class Parent {
+    static void show() {
+        System.out.println("Parent static method");
+    }
+}
+
+class Child extends Parent {
+    static void show() {
+        System.out.println("Child static method");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Parent.show();  // Calls Parent's static method
+        Child.show();   // Calls Child's static method
+    }
+}
+```
+   - In this case, you are not actually overriding the method, but rather hiding it. The method is resolved based on the        reference type at compile-time, not at runtime (no polymorphism with static).
+   - final methods exhibit dynamic binding (resolved at runtime).
+   - static methods exhibit static binding (resolved at compile time).
+
+
+ **NOTE:CAN FINAL and STATIC be used together?**
+ Yes, you can combine final and static for variables or methods:
+
+   - Final static variables: This is often used for constants. A final static variable can only be assigned once and belongs to the class.
+
+```java
+public class MyClass {
+    public static final int MAX_SIZE = 100;
+}
+```
+
+   - Final static methods: A method can be both final and static, which means it belongs to the class and cannot be overridden.
+
+```java
+
+public class MyClass {
+    public static final void showMessage() {
+        System.out.println("Final static method");
+    }
+}
+```
+#### SUMMARY:
+Final can only be set once, but it still can be set and it can have a different value for each instance. Say you have a car class. Your make and model could be final and set in the constructor. Each new car can have a different make and model, but you can't change their make and model after it is set.
+
+Static variables are specific to the class and are cannot have seperate values for each instance. Your car class can have a car registry. To track all cars ever created, there is a static int that starts at 0 and is incremented by one each time a car is constructed. If this wasn't static, each car would have its own totalCars which would be one, since each instance starts at zero and that gets incremented in the constructor. However, since it is static, it is initialized with the class and each new car increases it by one so that it's value is equal to how many cars have been made.
+
+Static final is for constants. You need to know how fast your cars accelerate due to gravity. This value is set to 9.8. It is static because it doesn't matter which instance, it belongs to the class as a whole and you don't allow the value to be changed, so it can be final.
+Final:
+
+- Each instance has its own copy of the field.
+- The value cannot be changed after initialization.
+- Useful for creating immutable objects.
+
+Static:
+
+- There is only one copy of the field shared by all instances.
+- The value can be changed, but it affects all instances.
+- Useful for class-level constants or variables that need to be shared across all instances.
+
+## **Q:**What are access modifiers?
+CREDITS:**ANUJ BHAIYA** 
+![image](https://github.com/user-attachments/assets/b1081fc6-2c77-4cca-bea5-dfb0d9997f12)
+
+
+
+
+ 
