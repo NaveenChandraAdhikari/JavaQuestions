@@ -555,11 +555,291 @@ Static:
 - The value can be changed, but it affects all instances.
 - Useful for class-level constants or variables that need to be shared across all instances.
 
-## **Q:**What are access modifiers?
+## **Q:What are access modifiers?**
 CREDITS:**ANUJ BHAIYA** 
 ![image](https://github.com/user-attachments/assets/b1081fc6-2c77-4cca-bea5-dfb0d9997f12)
+![image](https://github.com/user-attachments/assets/6def745b-bac6-4df2-bdbf-0a1892cdf4ee)
+
+Access modifiers in Java control the visibility and accessibility of classes, methods, and variables. Java has four types of access modifiers: public, private, protected, and default (no keyword).
+
+- Default (Package-Private): When no access modifier is specified, the default access is applied. This means that the class, method, or variable is accessible only within the same package but not from other packages.
+
+- Public: Public members are accessible from anywhere, including different packages. This is the most open access level, making the member globally available.
+
+- Private: Private members are only accessible within the class where they are defined. It’s the most restrictive access level and is essential for encapsulation, as it hides implementation details from outside the class.
+
+- Protected: Protected members can be accessed within the same package and also by subclasses, even if they’re in different packages.
+
+At the top level, classes can only be public or default, while member-level entities (methods, fields) can use any of the four.
+
+**WHAT IF A METHOD IN CHILD CLASS IS MORE RESTRICTED THAN A PARENT CLASS**
+- In Java, if a method in a child class is more restricted than the corresponding method in its parent class, it will result in a compilation error. This is because Java enforces that you cannot reduce the visibility of an overridden method compared to the method in the parent class.
+
+**Why?**
+When a class is extended, the child class should honor the access level defined in the parent class. If you were allowed to reduce the visibility (e.g., make a public method in the parent class private in the child class), it could break the code that relies on accessing the method from outside the child class.
+
+Example:
+```java
+class Parent {
+    public void show() {
+        System.out.println("Parent class method");
+    }
+}
+
+class Child extends Parent {
+    // Compilation error: Cannot reduce the visibility of the inherited method
+    private void show() {
+        System.out.println("Child class method");
+    }
+}
+```
+In this case, trying to make show() private in the Child class would result in an error because it has a more restricted access than the public method in Parent.
+
+**Key Rule**:
+When overriding a method, the access level must be the same or less restrictive. So, a protected method in the parent class can be overridden as protected or public, but not private. A public method must remain public when overridden.
+
+## **Q:What is Shadowing in Static Methods?**
+In Java, shadowing occurs when a subclass defines a static method with the same name and signature as a static method in its parent class. However, static methods are not overridden in the traditional sense. Instead, they are shadowed (or hidden).
+
+Key Points:
+Static methods are bound to the class, not to instances.
+Shadowing happens when the subclass defines a static method with the same signature as the one in the parent class.
+Which method gets called depends on the reference type (not the object type), meaning the method that belongs to the class type of the reference is called, not the class of the actual object.
+Example:
+```java
+class Parent {
+    static void show() {
+        System.out.println("Parent static method");
+    }
+}
+
+class Child extends Parent {
+    static void show() {
+        System.out.println("Child static method");
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        Parent obj1 = new Parent();
+        Parent obj2 = new Child();
+
+        obj1.show();  // Output: Parent static method
+        obj2.show();  // Output: Parent static method (since reference is of Parent)
+    }
+}
+```
+In this example, both Parent and Child classes have a static method show(). However, when the method is called through an instance reference of type Parent, the static method in Parent is executed, even if the object is an instance of Child.
+
+Important Notes:
+- Static methods are resolved at compile time based on the reference type, not at runtime (unlike instance methods, which use dynamic dispatch).simple se baat hai static onyl cares about class,they did'nt care about where the memory allocated.
+- Shadowing does not involve polymorphism, so no method overriding or runtime method selection occurs with static methods.
+
+ **Q Java is pass/callby value of pass/call by reference**
+
+ In Java, all arguments are passed by value, not by reference. However, this concept can sometimes be confusing because of how Java handles primitive types versus objects.
+
+**Key Points**:
+- Primitive Types (int, float, etc.): Java passes a copy of the value. Changes made to the parameter inside the method do not affect the original variable.
+- Objects (references to objects): Java passes a copy of the reference to the object. So, the reference itself is passed by value. This means you can modify the object's internal state via the reference, but you cannot change the reference to point to a new object outside the method.
+
+Example 1: Pass-by-Value with Primitives
+```java
+
+class Test {
+    public static void modifyPrimitive(int x) {
+        x = 10;  // This only modifies the local copy
+    }
+
+    public static void main(String[] args) {
+        int a = 5;
+        modifyPrimitive(a);
+        System.out.println(a);  // Output: 5 (original variable is unchanged)
+    }
+}
+```
+Explanation: Here, a is passed as a copy of its value, so modifying x inside modifyPrimitive() does not affect the original value of a.
+Example 2: Pass-by-Value with Objects (References)
+```java
+
+class Person {
+    String name;
+    Person(String name) {
+        this.name = name;
+    }
+}
+
+class Test {
+    public static void modifyObject(Person p) {
+        p.name = "John";  // This modifies the object's internal state
+    }
+
+    public static void main(String[] args) {
+        Person person = new Person("Alice");
+        modifyObject(person);
+        System.out.println(person.name);  // Output: John (object's state is modified)
+    }
+}
+```
+Explanation: Here, person is passed by value, but what is passed is a copy of the reference to the Person object. Inside the modifyObject() method, we can modify the object's internal state (the name field), and this change reflects outside the method because the reference still points to the same object.
+Example 3: Attempting to Change the Object Reference
+```java
+
+class Person {
+    String name;
+    Person(String name) {
+        this.name = name;
+    }
+}
+
+class Test {
+    public static void changeReference(Person p) {
+        p = new Person("Tom");  // This only changes the local copy of the reference
+    }
+
+    public static void main(String[] args) {
+        Person person = new Person("Alice");
+        changeReference(person);
+        System.out.println(person.name);  // Output: Alice (reference is unchanged)
+    }
+}
+```
+Explanation: In this case, even though we try to reassign p inside changeReference(), it only affects the local copy of the reference. The original reference person in main() still points to the Person object with the name "Alice".
+Summary:
+- Java is pass-by-value. For primitives, the value itself is copied. For objects, a copy of the reference is passed. This allows you to modify the object's state inside the method, but you cannot reassign the reference to a new object and have it affect the original reference outside the method.
+- Modifying object fields (like p.name = "John";) changes the actual object in memory because both p and person point to the same object.
+ - Changing the reference itself (like p = new Person("Tom");) only changes the local reference p inside the method and does not affect the original reference (person) outside the method.
 
 
+## **Q Equals and HashCode contract in Java?**
 
+- Understanding equals() and hashCode() Contract
+In Java, when you override equals(), you must also override hashCode(). The two methods work together, especially when objects are stored in collections like HashSet or used as keys in a HashMap.
 
- 
+ - equals(): Determines if two objects are "meaningfully equal." By default, the equals() method in Java compares memory addresses, which is why two objects, even with the same values, return false if equals() isn't overridden.
+
+- hashCode(): Produces an integer (hash code) that represents the object. If two objects are considered equal according to equals(), they must have the same hashCode().
+  
+**Key Points for the Contract:**
+- If two objects are equal (equals() returns true), they must have the same hashCode().
+- If two objects have the same hashCode(), they might not be equal, but it’s recommended to try to avoid this (called a hash collision).Better hash function prevent this.
+
+  **Examples of proper equals()and hashCode() override?**
+  
+```java
+class Employee {
+    private int id;
+    private String name;
+
+   // Constructor, getters, and setters
+    public Employee(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+ @Override
+    public boolean equals(Object o) {
+        // Step 1: Check if the object is compared to itself
+        if (this == o) return true;
+        // Step 2: Check if the other object is null or of a different class
+        if (o == null || getClass() != o.getClass()) return false;
+        // Step 3: Typecast the object to compare properties
+        Employee employee = (Employee) o;
+        // Step 4: Compare id and name (you can add more fields if necessary)
+        return id == employee.id && name.equals(employee.name);
+    }
+    @Override
+    public int hashCode() {
+        // Combine id and name to produce a unique hash code for proper hashcode overriding as same hashcode does not means equal objects 
+        return Objects.hash(id, name);
+    }
+}
+```
+**2. Why == and equals() Might Return False for Two Objects with Same Data**
+In Java:
+
+==: Compares references, not the actual object content. So, e1 == e2 will return false because they are two different objects in memory, even if they have the same id and name.
+equals(): By default, the equals() method also compares references (unless overridden), so e1.equals(e2) also returns false unless we override it to compare object content.
+Code Example Before Overriding equals():
+```java
+
+Employee e1 = new Employee(1, "John");
+Employee e2 = new Employee(1, "John");
+
+// Both of these will return false, even though the id and name are the same
+System.out.println(e1 == e2);     // false (compares memory addresses)
+System.out.println(e1.equals(e2)); // false (compares references by default)
+3. What Happens After Overriding equals()
+When we override the equals() method (as shown earlier), we make it compare the content of the objects (in this case, the id and name), instead of just comparing their references.
+```
+
+```java
+Code Example After Overriding equals():
+
+Employee e1 = new Employee(1, "John");
+Employee e2 = new Employee(1, "John");
+
+// Now `equals()` will return true because the objects have the same id and name
+System.out.println(e1 == e2);     // false (still compares memory addresses)
+System.out.println(e1.equals(e2)); // true (compares content after overriding)
+Here’s what’s happening:
+```
+==: Still returns false because it compares memory locations, and e1 and e2 are different objects.
+equals(): Now returns true because we have overridden it to compare the actual id and name values, which are the same for both object
+
+**Q  What happens if you override equals() without overriding hashCode()?**
+If you override equals() alone without overriding hashCode(), the objects can be considered equal when you compare them using equals(). However, this can cause problems in hash-based collections like HashMap, HashSet, or Hashtable, where both equals() and hashCode() are used together.
+
+If you override equals() without overriding hashCode(), here's what happens:
+
+Two objects might be considered equal by equals(), but they can still have different hash codes.
+In collections like HashSet or HashMap, objects are stored based on their hashCode(), so even if two objects are equal, they might end up in different hash buckets, and the collection will think they are different objects.
+Example:
+```java
+
+import java.util.HashSet;
+
+class Employee {
+    private int id;
+    private String name;
+
+    public Employee(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return id == employee.id && name.equals(employee.name);
+    }
+
+    // No hashCode() override
+}
+
+public class Test {
+    public static void main(String[] args) {
+        Employee e1 = new Employee(1, "John");
+        Employee e2 = new Employee(1, "John");
+
+        HashSet<Employee> set = new HashSet<>();
+        set.add(e1);
+        set.add(e2);
+
+        // Both e1 and e2 are equal according to equals(), but different hash codes
+        System.out.println(e1.equals(e2));  // Output: true
+
+        // e1 and e2 will both be in the set, even though they are considered equal
+        // This is because they have different hash codes
+        System.out.println(set.size());  // Output: 2 (should be 1 if equals and hashCode were consistent)
+    }
+}
+```
+**SUMMARY**
+- If you override equals() but not hashCode(), two objects can be considered equal when compared using equals(). However, they may still have different hashCode() values because the default hashCode() implementation from the Object class is used.
+
+- This can cause problems in hash-based collections like HashSet and HashMap, where both equals() and hashCode() are used. Even though two objects are equal according to equals(), they might be treated as different objects in a hash-based collection because they have different hash codes.
+
+- Therefore, whenever you override equals(), you must also override hashCode() to maintain the contract that equal objects must have the same hashCode().
