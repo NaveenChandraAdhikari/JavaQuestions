@@ -843,3 +843,70 @@ public class Test {
 - This can cause problems in hash-based collections like HashSet and HashMap, where both equals() and hashCode() are used. Even though two objects are equal according to equals(), they might be treated as different objects in a hash-based collection because they have different hash codes.
 
 - Therefore, whenever you override equals(), you must also override hashCode() to maintain the contract that equal objects must have the same hashCode().
+
+## **Q All you know about String pool ,String literals etc etc**
+
+We know that String objects can be created in 2 ways:
+Using the 'new' operator
+Using double-quotes
+
+String s1=new String("hi");
+String s2="hi";
+When the String is created with the double quotes,JVM searches it for in the string pool; if the same value is found,it returns the reference to that String else creates a new object with the new value provided.
+
+In the other case,if the String is created with the 'new' operator,then JVM creates a new object but not in the string pool.If we want to create the object in the stirng pool,we can use the intern() method.
+
+**What is String constant pool?**
+The memory space allocated in the heap memory to store the string literal is called the string constant pool.
+No two string objects can have the same value in a string constant pool.
+It provides the facility of reusability of the existing string objects.
+When a new string object is created using the string literals,the JVM first checks in the pool if this Stirng already exists or not.
+If it exists,then it will reference the existing STRING RATHER THAN creating  a new object.
+This will help in the speeding up of the application and also help in saving the memory as no 2 objects will have the same content.
+```java
+Stirng s1="hi";
+Strinng s2="hi";
+System.out.println(s1==s2); //true;
+```
+String s1=new String("hi");
+what JVM does is that it checks first in the strin pool if "hi" is not present then it creates a copy for reusability purpose.
+String pool does not have given any right for GARBAGE COLLECT any of the object becuase of reusability,thats why even not after pointing out by nobody "hi" is present in the stirng pool
+########################
+String s1="hi";
+Stirng s2=new String("hi");
+2 objects are created in the above 2 
+s1 is created in the string constant pool as it is created by string literals.
+s2 is created by new and non new object will be created in string pool as it is already created by s1.
+
+##########################
+String s1=new String("code");
+here only 2 objects are created 1 in heap and 1 in pool
+
+##########################
+String s1=new String("code");
+String s2=new String("code");
+
+3 objects will be created 
+s1 --> 1 in string pool and in heap 
+s2 ---> 1 will be created in heap memory.as the object with the same value is already present in the string constat pool.
+
+" == " compares memory address while .equals comapres the content and as String is a class so equals and hashCode methods overrides 
+
+##############################
+intern() method is to put String(which is passed to the intern method) into the string constant pool.
+When the intern method is invoked,if the String constant pool already contains a string equal to the String object as determined by the equals(Object)method,the STRING FROM the pool is returned 
+Otherwise the string is added to the pool,and a refernce to the Stirng object is returned.
+
+String s1="hi";
+String s2=new String("hi");
+String s3=s2.intern();
+s1 and s3 reference to the same "hi" object in string pool 
+
+##############################
+Strings are immutable 
+s1="hi";
+s1=s1+"hellow";
+then hashcode() for both are different as 2 diffrent objects are made in the string pool
+
+
+
