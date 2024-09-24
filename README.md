@@ -908,5 +908,371 @@ s1="hi";
 s1=s1+"hellow";
 then hashcode() for both are different as 2 diffrent objects are made in the string pool
 
+## **Q What is Object class?**
+Object Class:
 
+    The root of the class hierarchy in Java.
+    Every class directly or indirectly inherits from Object.
+    Provides fundamental methods for object manipulation and behavior.
+
+Key Methods:
+
+    equals(Object obj): Determines if two objects are equal.
+    hashCode(): Generates a unique hash code for an object.
+    toString(): Returns a string representation of the object.
+    clone(): Creates a copy of the object (if supported by the class).
+    getClass(): Retrieves the runtime class of the object.
+    notify() and notifyAll(): Wakes up one or all threads waiting on the object's monitor.
+    wait(): Causes the current thread to wait until notified or a timeout occurs.
+
+Purpose:
+
+    Serves as a foundation for all other classes.
+    Defines common methods and behavior shared by all objects.
+    Provides a starting point for custom class implementations.
+
+Usage:
+
+    Inheritance: All classes implicitly inherit from Object.
+    Method Overriding: Subclasses can override methods like equals, hashCode, and toString to provide specific implementations.
+    Object Comparison: Use equals to compare objects for equality.
+    Hashing: Use hashCode for efficient object storage and retrieval in hash-based data structures.
+    String Representation: Use toString to debug or display object information.
+    Cloning: Use clone to create copies of objects (if supported).
+    Synchronization: Use wait, notify, and notifyAll for thread coordination and synchronization.
+
+Additional Notes:
+
+    The finalize method is rarely used and has potential issues. It's generally recommended to use try-with-resources or explicit resource management instead.
+    The clone method is protected by default and requires careful implementation to avoid shallow copies.
+    The getClass method can be used to obtain runtime type information.
+
+## **Q:Difference between Deepcopy and ShallowCopy?**
+Deep Copy vs. Shallow Copy
+
+In Java, when you create a copy of an object, you can either make a deep copy or a shallow copy.
+
+Shallow Copy:
+
+    A shallow copy creates a new object, but the fields of the new object are references to the same objects as the original object.
+    If the original object contains references to other objects, the copy will also reference those same objects.
+    Changes made to the original object's fields will be reflected in the copy, and vice versa.
+
+Deep Copy:
+
+    A deep copy creates a new object and recursively copies all the fields and their values of the original object.
+    If the original object contains references to other objects, the deep copy will create new copies of those objects as well.
+    Changes made to the original object's fields or the fields of its nested objects will not affect the copy.
+
+Example:
+```Java
+
+class Person {
+    private String name;
+    private Address address;
+
+    // ...
+}
+
+class Address {
+    private String street;
+    // ...
+}
+
+Person originalPerson = new Person("Alice", new Address("123 Main St."));
+Person shallowCopy = originalPerson; // Shallow copy
+Person deepCopy = originalPerson.deepClone(); // Assuming deepClone() is implemented
+
+// Change the address in the original person
+originalPerson.getAddress().setStreet("456 Elm St.");
+
+System.out.println(originalPerson.getAddress().getStreet()); // Output: 456 Elm St.
+System.out.println(shallowCopy.getAddress().getStreet()); // Output: 456 Elm St. (shallow copy references the same address)
+System.out.println(deepCopy.getAddress().getStreet()); // Output: 123 Main St. (deep copy has its own address)
+```
+In this example:
+    - The shallowCopy references the same Address object as the original person, so changing the address in the original affects the shallow copy.
+    - The deepCopy has its own copy of the Address object, so changing the address in the original does not affect the deep copy.
+
+When to Use Deep or Shallow Copies:
+
+    - Shallow copy: When you want to quickly create a new object that shares references to the same objects.
+    - Deep copy: When you want to create a truly independent copy of an object, including its nested objects.
+
+**Note**: Java's built-in clone() method typically creates a shallow copy. To create a deep copy, you often need to implement a custom deepClone() method that recursively copies all fields and their values.
+      and also Objects using Serialization/Desirialization typically created DeepCopy.
+
+*Fore Clear Example*:https://www.geeksforgeeks.org/difference-between-shallow-and-deep-copy-of-a-class/
+
+## **Q:Different Ways to create an Object in Java**
+
+In Java, objects can be created using several different techniques. These methods differ in how they instantiate the object and how constructors or initialization occurs. Here are the most common ways to create objects:
+1. Using the new Keyword
+
+This is the most common way to create an object in Java. The new keyword is followed by a call to the class constructor to create an object in heap memory.
+
+Key Points:
+
+    Constructor is called directly.
+    Memory is allocated for the object on the heap.
+    Constructor can have parameters.
+
+2. Using Class's newInstance() Method (Reflection)
+
+The newInstance() method of the Class class creates a new instance of a class using reflection. It can either be used with a default constructor or parameterized constructor (in Java 9+).
+
+Key Points:
+
+    Creates an object dynamically at runtime.
+    Uses reflection, so the class name may not be known until runtime.
+    InstantiationException or IllegalAccessException may be thrown.
+
+3. Using Clone Method
+
+The clone() method is part of the Cloneable interface, and it creates a copy of an existing object.
+
+Key Points:
+
+    clone() copies the values from the original object.
+    Shallow copy by default, deep copy requires custom logic.
+    Needs to implement the Cloneable interface and override clone() method.
+
+4. Using Deserialization
+
+Deserialization is the process of reading an object from a file or stream and restoring it in memory.
+
+Key Points:
+
+    No constructor is called when an object is deserialized.
+    Deserializes from a file/stream into memory.
+
+```java
+
+import java.io.*;
+
+// Define a Car class
+class Car implements Cloneable, Serializable {
+    String model;
+    
+    // Constructor
+    Car(String model) {
+        this.model = model;
+        System.out.println("Constructor called: Car model is " + model);
+    }
+    
+    // Default Constructor
+    Car() {
+        this.model = "Default Model";
+        System.out.println("Constructor called: Default Car model");
+    }
+
+    // Overriding the clone() method to create a copy of the object
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+    // toString() to print the reference memory and model
+    @Override
+    public String toString() {
+        return "Car{model=" + model + "}@" + Integer.toHexString(System.identityHashCode(this));
+    }
+}
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        // 1. Using the 'new' keyword
+        System.out.println("\n--- Using 'new' keyword ---");
+        Car car1 = new Car("Tesla Model S");
+        System.out.println("Object Reference: " + car1);
+        
+        // 2. Using Class's newInstance() method (Reflection)
+        System.out.println("\n--- Using Class.forName() and newInstance() ---");
+        Class<?> carClass = Class.forName("Car");
+        Car car2 = (Car) carClass.getDeclaredConstructor().newInstance();
+        System.out.println("Object Reference: " + car2);
+        
+        // 3. Using the clone() method
+        System.out.println("\n--- Using clone() method ---");
+        Car car3 = (Car) car1.clone();
+        System.out.println("Object Reference: " + car3);
+        
+        // 4. Using Deserialization
+        System.out.println("\n--- Using Deserialization ---");
+        // Serialize car1 to a file
+        FileOutputStream fileOut = new FileOutputStream("car.ser");
+        ObjectOutputStream out = new ObjectOutputStream(fileOut);
+        out.writeObject(car1);
+        out.close();
+        fileOut.close();
+        
+        // Deserialize from the file
+        FileInputStream fileIn = new FileInputStream("car.ser");
+        ObjectInputStream in = new ObjectInputStream(fileIn);
+        Car car4 = (Car) in.readObject();
+        in.close();
+        fileIn.close();
+        
+        System.out.println("Object Reference: " + car4);
+    }
+}
+```
+**Output Explanation:**
+
+    Using the new Keyword:
+        When Car car1 = new Car("Tesla Model S") is executed, the constructor is called, and an object is created in heap memory. The constructor outputs a message, and the memory reference is printed.
+        Output:
+
+    Constructor called: Car model is Tesla Model S
+    Object Reference: Car{model=Tesla Model S}@<memory reference>
+
+Using Class's newInstance() Method:
+
+    When Car car2 = (Car) carClass.getDeclaredConstructor().newInstance() is executed, the default constructor is called, and a new object is created at runtime using reflection.
+    Output:
+    Constructor called: Default Car model
+    Object Reference: Car{model=Default Model}@<memory reference>
+
+Using the clone() Method:
+
+    When Car car3 = (Car) car1.clone() is executed, the clone() method creates a shallow copy of the car1 object. No constructor is called.
+    Output:
+    Object Reference: Car{model=Tesla Model S}@<memory reference>
+
+Using Deserialization:
+
+    Deserialization restores the object from a file without calling the constructor. The object reference after deserialization is printed.
+    Output:
+      Object Reference: Car{model=Tesla Model S}@<memory reference>
+
+## **Q: What is Custom Exception?Difference between Checked and Unchecked Exceptions in java?**
+Custom exceptions in Java are user-defined exceptions created by extending the Exception class (for checked exceptions) or RuntimeException class (for unchecked exceptions). They allow developers to create their own exception classes for handling specific application or business logic errors that are not covered by Java’s standard exceptions.
+
+Why use custom exceptions?
+
+    To represent specific errors related to the application domain.
+    To make error handling more meaningful and readable.
+    To provide additional information or context about the exception.
+
+How to Create a Custom Exception:
+
+    For checked exceptions: Extend the Exception class.
+    For unchecked exceptions: Extend the RuntimeException class.
+
+Example of a Custom Exception:
+
+Let’s create a custom exception InvalidAgeException, which is thrown when a user's age is invalid (e.g., below 18).
+
+java
+
+// Custom checked exception
+class InvalidAgeException extends Exception {
+    // Constructor accepting a custom message
+    public InvalidAgeException(String message) {
+        super(message);  // Passing the message to the Exception class constructor
+    }
+}
+
+public class CustomExceptionExample {
+    // Method that checks age and throws the custom exception if age is invalid
+    public static void validateAge(int age) throws InvalidAgeException {
+        if (age < 18) {
+            throw new InvalidAgeException("Age is not valid. Must be 18 or older.");
+        } else {
+            System.out.println("Valid age: " + age);
+        }
+    }
+
+    public static void main(String[] args) {
+        try {
+            validateAge(16);  // This will throw an InvalidAgeException
+        } catch (InvalidAgeException e) {
+            System.out.println("Caught exception: " + e.getMessage());
+        }
+    }
+}
+
+Output:
+
+
+Caught exception: Age is not valid. Must be 18 or older.
+
+**Runtime vs Compile-time Exceptions (Unchecked vs Checked Exceptions)**
+
+*Java exceptions are divided into two main categories: checked exceptions and unchecked exceptions.*
+- 1. Checked Exceptions (Compile-time Exceptions):
+
+    These are exceptions that the compiler checks at compile time.
+    They must either be caught using a try-catch block or declared using the throws keyword in the method signature.
+    Examples include IOException, SQLException, and ClassNotFoundException.
+
+Characteristics:
+
+  - Checked exceptions represent conditions that the application should anticipate and recover from.
+  - If a checked exception occurs, it is required to handle it explicitly during compilation, otherwise, the program won’t compile.
+
+Example:
+
+```java
+
+import java.io.*;
+
+public class CheckedExceptionExample {
+    public static void main(String[] args) {
+        try {
+            FileReader file = new FileReader("nonexistentfile.txt"); // File may not exist
+            BufferedReader reader = new BufferedReader(file);
+            String line = reader.readLine();
+        } catch (IOException e) {
+            System.out.println("File not found or could not be opened: " + e.getMessage());
+        }
+    }
+}
+```
+In the above example, if the file does not exist, an IOException is thrown, which is a checked exception. The compiler forces you to either handle it using try-catch or declare it using throws.
+- 2. Unchecked Exceptions (Runtime Exceptions):
+
+    - These are exceptions that occur at runtime and are not checked by the compiler.
+    - They are typically caused by programming logic errors like division by zero, accessing an invalid index in an array, or NullPointerException.
+    - Examples include NullPointerException, ArrayIndexOutOfBoundsException, ArithmeticException, and IllegalArgumentException.
+
+Characteristics:
+
+    Unchecked exceptions are generally due to bugs or programming mistakes that could be avoided by writing better code.
+    The compiler does not force the handling of unchecked exceptions. The application can recover or terminate, but it does not require explicit handling.
+
+Example:
+
+```java
+
+public class UncheckedExceptionExample {
+    public static void main(String[] args) {
+        int[] numbers = {1, 2, 3};
+        System.out.println(numbers[3]);  // This will cause ArrayIndexOutOfBoundsException
+    }
+}
+```
+In this example, accessing an invalid index in an array results in an ArrayIndexOutOfBoundsException, which is an unchecked exception. The compiler doesn't check for it at compile time, but it will cause a crash at runtime.
+## Key Differences Between Runtime (Unchecked) and Compile-time (Checked) Exceptions
+
+| **Aspect**                | **Checked Exceptions**                                     | **Unchecked Exceptions**                           |
+|---------------------------|-----------------------------------------------------------|---------------------------------------------------|
+| **Exception Type**         | Subclass of `Exception` (excluding `RuntimeException`)     | Subclass of `RuntimeException`                    |
+| **Checked by Compiler**    | Yes                                                       | No                                                |
+| **Handling Required**      | Must be handled using `try-catch` or `throws`             | Not required to handle explicitly                 |
+| **Common Examples**        | `IOException`, `SQLException`, `ClassNotFoundException`   | `NullPointerException`, `ArrayIndexOutOfBoundsException`, `ArithmeticException` |
+| **Occurs**                 | Typically due to external factors like file system, network issues | Typically due to programming logic errors        |
+| **When Raised**            | At compile-time                                           | At runtime                                        |
+
+Interview Perspective:
+
+    Custom Exception: An interviewer may ask why and when to create custom exceptions. The correct answer involves explaining that custom exceptions are used when standard exceptions do not adequately represent the specific error conditions in your application (e.g., domain-specific errors).
+    Checked vs Unchecked Exceptions: Interviewers may ask about the difference between these two. The key point is that checked exceptions must be handled at compile time, whereas unchecked exceptions are runtime errors that the programmer is not forced to handle.
+
+Typical Interview Question:
+
+   When would you prefer using a custom exception?
+        - You should use a custom exception when a standard Java exception doesn’t fit your application’s domain, such as validating business logic (e.g., age, email format).
+ What is the difference between checked and unchecked exceptions?
+        - Checked exceptions must be handled or declared in method signatures, while unchecked exceptions are not checked by the compiler and typically represent programming errors.
 
