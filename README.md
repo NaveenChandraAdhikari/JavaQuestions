@@ -1275,4 +1275,288 @@ Typical Interview Question:
         - You should use a custom exception when a standard Java exception doesn’t fit your application’s domain, such as validating business logic (e.g., age, email format).
  What is the difference between checked and unchecked exceptions?
         - Checked exceptions must be handled or declared in method signatures, while unchecked exceptions are not checked by the compiler and typically represent programming errors.
+## Q**Differnce between this() and super() ? **
+# `this` vs `super` in Java
 
+## 1. Basic Definitions:
+
+### `this`:
+- Refers to the current instance of the class in which it is used.
+- It is used to differentiate between class attributes and parameters or to explicitly reference the current object.
+
+### `super`:
+- Refers to the superclass (parent class) of the current object.
+- It is primarily used to access methods and constructors of the superclass, allowing the subclass to inherit or modify behavior.
+
+---
+
+## 2. Usage of `this`:
+
+### Accessing Class Members:
+`this` is used to refer to instance variables or methods of the current class. It's especially useful when parameter names shadow instance variable names.
+
+```java
+class A {
+    private int value;
+    
+    public A(int value) {
+        // 'this.value' refers to the instance variable, 'value' refers to the parameter
+        this.value = value;
+    }
+
+    public void showValue() {
+        System.out.println(this.value); // 'this' can be omitted here, but it's more explicit
+    }
+}
+Calling Another Constructor (Constructor Chaining):
+this can also be used to call another constructor in the same class. This is called constructor chaining and must be the first statement in the constructor.
+```
+```java
+
+class B {
+    private int x, y;
+    
+    // Constructor 1
+    public B(int x) {
+        this(x, 0); // Calls Constructor 2
+    }
+
+    // Constructor 2
+    public B(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+}
+```
+- 3. Usage of super:
+Accessing Superclass Methods and Variables:
+super is used to access members (variables or methods) of the superclass that are hidden or overridden by the subclass.
+
+java
+Copy code
+class Parent {
+    public void display() {
+        System.out.println("Display from Parent");
+    }
+}
+
+class Child extends Parent {
+    public void display() {
+        System.out.println("Display from Child");
+    }
+    
+    public void show() {
+        super.display(); // Calls the superclass method
+    }
+}
+Calling Superclass Constructor:
+super is used to call the parent class's constructor. It must be the first statement in the subclass constructor. If not called explicitly, Java automatically inserts a call to the no-argument constructor of the parent class.
+
+```java
+
+class A {
+    public A(String message) {
+        System.out.println("A's Constructor: " + message);
+    }
+}
+
+class B extends A {
+    public B(String message) {
+        super(message); // Calls A's constructor
+        System.out.println("B's Constructor");
+    }
+}
+```
+## 4. Key Differences: `this` vs `super`
+
+| **Feature**                   | **`this`**                              | **`super`**                                 |
+|-------------------------------|-----------------------------------------|---------------------------------------------|
+| **Refers to**                  | The current object                     | The parent (superclass) object              |
+| **Used in**                    | The class itself                       | The subclass                               |
+| **Accesses**                   | Current class members                  | Parent class members                       |
+| **Constructor Usage**          | Calls another constructor in the same class | Calls a constructor of the superclass   |
+| **Overridden Methods**         | Refers to the current class's method    | Refers to the superclass's method           |
+| **Constructor Call Position**  | Can appear anywhere                    | Must be the first statement in constructor  |
+
+- 5. When to Use this and super:
+Use this:
+When you want to differentiate between instance variables and parameters.
+When you need to call another constructor within the same class.
+When you explicitly want to reference the current object (e.g., returning this from a method).
+Use super:
+When you want to call the superclass's constructor.
+When you want to access members of the superclass that are overridden or hidden in the subclass.
+- 6. Example to Illustrate Both Together:
+
+```java
+
+class Animal {
+    String name;
+
+    public Animal(String name) {
+        this.name = name;
+    }
+
+    public void sound() {
+        System.out.println("Animal makes a sound");
+    }
+}
+
+class Dog extends Animal {
+    String breed;
+
+    public Dog(String name, String breed) {
+        super(name); // Calls the superclass (Animal) constructor
+        this.breed = breed; // Refers to the current class (Dog) instance variable
+    }
+
+    @Override
+    public void sound() {
+        super.sound(); // Calls the superclass method
+        System.out.println("Dog barks");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Dog dog = new Dog("Buddy", "Labrador");
+        dog.sound(); // Calls overridden method in Dog
+    }
+}
+Output:
+css
+Copy code
+Animal makes a sound
+Dog barks
+Explanation:
+super(name) calls the parent Animal constructor.
+this.breed refers to the Dog class's own field.
+super.sound() calls the Animal class's sound method before calling the overridden sound method in Dog.
+```
+### Additional Notes:
+- this() vs super(): Both are constructor calls, but this() is used for constructor chaining within the same class, while super() is for invoking the parent class constructor.
+- Implicit vs Explicit: If you don't explicitly call super(), Java automatically calls the parent class's no-argument constructor. If the parent class doesn't have a no-argument constructor, you'll get a compile-- 
+  time error unless you explicitly provide a call to a valid constructor.
+
+
+## Q:Difference between interface and abstract class ,also when to use it ??**
+
+# Interface vs Abstract Class in Java
+
+## 1. Definitions:
+
+- **Abstract Class**: 
+  An abstract class is a class that cannot be instantiated directly. It can contain both abstract methods (without a body) and concrete methods (with a body). It is used to provide a base class with some common functionality for derived classes.
+
+- **Interface**: 
+  An interface is a reference type in Java, similar to a class, that can contain only abstract methods (before Java 8) and static constants. From Java 8 onwards, interfaces can also contain default and static methods with implementations, but no state (instance variables).
+
+---
+
+## 2. Key Differences:
+
+| **Feature**                       | **Abstract Class**                          | **Interface**                              |
+|-----------------------------------|---------------------------------------------|--------------------------------------------|
+| **Purpose**                       | To share common code across related classes | To define a contract that unrelated classes can implement |
+| **Methods**                       | Can have both abstract and concrete methods | Can have only abstract methods (before Java 8) and default/static methods (from Java 8 onwards) |
+| **Inheritance**                   | A class can extend only one abstract class  | A class can implement multiple interfaces  |
+| **Fields**                        | Can have instance variables                 | Cannot have instance variables (only constants, `public static final`) |
+| **Access Modifiers**              | Methods can have any access modifier        | Methods are `public` by default; no modifiers allowed |
+| **Constructors**                  | Can have constructors                       | Cannot have constructors                   |
+| **Use of `extends` vs `implements`** | A class uses `extends` to inherit           | A class uses `implements` to adopt         |
+| **State Management**              | Can hold state (instance variables)         | Cannot hold state, only constants          |
+
+---
+
+## 3. When to Use Abstract Class vs Interface:
+
+### Use an Abstract Class When:
+- You want to provide some **common functionality** to all subclasses, but allow certain methods to be overridden or implemented differently.
+- You have **shared state or fields** (like instance variables) that you want to use across subclasses.
+- You expect a **clear, hierarchical relationship** between classes. For example, when you have a base class and closely related subclasses (e.g., `Vehicle` as the abstract class, with `Car` and `Bike` as subclasses).
+
+### Use an Interface When:
+- You want to define a **contract** that can be implemented by any class, regardless of the class hierarchy (e.g., `Flyable` or `Serializable` interface).
+- You need to allow **multiple inheritance** of behavior (Java doesn’t allow multiple class inheritance, but you can implement multiple interfaces).
+- You want to ensure that **unrelated classes** follow the same set of rules. For example, `Dog`, `Plane`, and `Bird` could all implement the `Flyable` interface.
+
+---
+
+## 4. Example of Abstract Class:
+
+```java
+abstract class Animal {
+    String name;
+
+    // Abstract method (must be implemented by subclasses)
+    public abstract void sound();
+
+    // Concrete method (optional to override in subclasses)
+    public void sleep() {
+        System.out.println("This animal is sleeping.");
+    }
+}
+
+class Dog extends Animal {
+    // Must implement the abstract method
+    @Override
+    public void sound() {
+        System.out.println("Dog barks");
+    }
+}
+```
+In this example:
+
+Animal is an abstract class that provides a common base for animals.
+The Dog class is forced to implement the sound() method but can choose to use the sleep() method as is or override it.
+5. Example of Interface:
+java
+Copy code
+interface Flyable {
+    void fly(); // Abstract method
+}
+
+interface Swimmable {
+    void swim(); // Abstract method
+}
+
+class Bird implements Flyable, Swimmable {
+    @Override
+    public void fly() {
+        System.out.println("Bird flies");
+    }
+
+    @Override
+    public void swim() {
+        System.out.println("Bird swims");
+    }
+}
+In this example:
+
+Flyable and Swimmable are interfaces that define behaviors.
+The Bird class can implement both interfaces, providing concrete behavior for both fly() and swim() methods.
+- 6. Java 8 and Later: Interfaces with Default Methods:
+From Java 8, interfaces can also have default methods with implementations.
+
+```java
+Copy code
+interface Walkable {
+    default void walk() {
+        System.out.println("Walking on two legs");
+    }
+}
+
+class Human implements Walkable {
+    // Inherits the default walk() method
+}
+```
+In this case, the Human class inherits the walk() method from the Walkable interface without the need to implement it.
+############################################################################################################################################################
+- Use an abstract class when you have a common base for related classes, especially when you need to share code or state (instance variables).
+- Use an interface when you want to define a contract that can be applied across unrelated classes or when you need to achieve multiple inheritance.
+- By understanding when to use each, you can structure your code more effectively, encouraging code reusability and flexibility.
+ ##############################################################################################################################################################
+
+
+**Q:ABOUT EXCEPTIONS**
+CREDITS : https://www.baeldung.com/java-global-exception-handler
