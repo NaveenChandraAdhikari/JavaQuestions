@@ -1935,3 +1935,16 @@ In Short:
 - Implementation happens in classes: The actual class that implements the interface is responsible for any necessary initialization, including any fields.
 Thus, constructors are not needed in interfaces since they don't create objects or maintain state.
 
+**## Q Java supports multithreading ?** 
+Java supports multithreading to improve performance, resource utilization, and responsiveness by allowing multiple tasks to run concurrently. It enables efficient handling of multiple operations, such as serving multiple web requests or performing background tasks, without blocking other processes.
+
+*How Is Multithreading Used at the Enterprise Level?*
+- Web Servers: Handle multiple client requests simultaneously by assigning each request to a new thread or thread pool, improving response time.
+- Background Processing: Execute tasks like data synchronization and report generation in the background without affecting the main application.
+- Parallel Processing: Used in big data and microservices to distribute tasks across multiple threads for faster execution.
+- Thread Pools: Manage and reuse threads efficiently to handle a high volume of tasks, ensuring scalability and resource management.
+Java provides built-in multithreading support via the Thread class, Executor framework, and parallel streams for handling enterprise-level tasks.
+
+
+
+
