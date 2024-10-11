@@ -1558,5 +1558,380 @@ In this case, the Human class inherits the walk() method from the Walkable inter
  ##############################################################################################################################################################
 
 
-**Q:ABOUT EXCEPTIONS**
+## **Q:ABOUT EXCEPTIONS**
 CREDITS : https://www.baeldung.com/java-global-exception-handler
+
+## **Q:What is OptionalClass and how can you avoid null pointer exception thriught this **
+Optional class in java is a container object that may or may not contain a non null value.It is a part of the java.util package and was introduced in java8 to help address the common issue of NullPointerExceptions that arise from trying to access methods or properties of null obejcts.
+
+**Purpose of Optional**
+- Avoid Null Checks: It provides a way to represent the absence of a value without using null, thus reducing the likelihood of NullPointerExceptions.
+- Express Intent: It clearly indicates that a value might be present or absent, making the API easier to understand and use.
+- Functional Programming Support: It supports functional programming features such as lambda expressions, making it easier to work with values that may not exist.
+- By using methods like isPresent(), ifPresent(), and orElse(), you can handle values safely and clearly, reducing the risk of runtime exceptions.
+
+## **Q:Differnce between comparator and comparable ?**
+-- Definition:
+- Comparable: It's an interface used to define the natural ordering of objects within the class itself. Classes that implement this interface must define the compareTo() method.
+- Comparator: It's an interface used to define an external ordering of objects. You can create multiple Comparator implementations for the same class to provide different sorting strategies.
+
+-- Implementation:
+- Comparable: Implemented by the class whose instances need to be compared. Only one compareTo() method can be defined per class, which specifies its natural order.
+- Comparator: Implemented as a separate class or as an anonymous class. You can define multiple compare() methods for various sorting orders.
+
+-- Method Signatures:
+- Comparable: The method compareTo(T o) returns:
+A negative integer if the current object is less than the specified object.
+Zero if they are equal.
+A positive integer if the current object is greater.
+- Comparator: The method compare(T o1, T o2) returns:
+A negative integer if o1 is less than o2.
+Zero if they are equal.
+A positive integer if o1 is greater.
+
+-- Use Cases:
+- Comparable: Use when you want a default sorting mechanism for a class (e.g., sorting a list of Person objects by age).
+- Comparator: Use when you need multiple sorting strategies for the same class (e.g., sorting Person objects by name or age).
+ ```java
+import java.util.ArrayList;
+import java.util.Collections;
+
+class Person implements Comparable<Person> {
+    String name;
+    int age;
+
+    Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    // Implement the compareTo method to sort by age
+    @Override
+    public int compareTo(Person other) {
+        return Integer.compare(this.age, other.age);
+    }
+
+    @Override
+    public String toString() {
+        return name + ": " + age;
+    }
+}
+
+public class ComparableExample {
+    public static void main(String[] args) {
+        ArrayList<Person> people = new ArrayList<>();
+        people.add(new Person("Alice", 30));
+        people.add(new Person("Bob", 25));
+        people.add(new Person("Charlie", 35));
+
+        Collections.sort(people);  // Sorts using the compareTo method
+        System.out.println(people); // Output: [Bob: 25, Alice: 30, Charlie: 35]
+    }
+}
+
+ ```
+
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
+class Person {
+    String name;
+    int age;
+
+    Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return name + ": " + age;
+    }
+}
+
+public class ComparatorExample {
+    public static void main(String[] args) {
+        ArrayList<Person> people = new ArrayList<>();
+        people.add(new Person("Alice", 30));
+        people.add(new Person("Bob", 25));
+        people.add(new Person("Charlie", 35));
+
+        // Sort by name using a Comparator
+        Collections.sort(people, new Comparator<Person>() {
+            @Override
+            public int compare(Person p1, Person p2) {
+                return p1.name.compareTo(p2.name);
+            }
+        });
+
+        System.out.println(people); // Output: [Alice: 30, Bob: 25, Charlie: 35]
+
+        // Sort by age using a Comparator (using lambda expression)
+        Collections.sort(people, (p1, p2) -> Integer.compare(p1.age, p2.age));
+        System.out.println(people); // Output: [Bob: 25, Alice: 30, Charlie: 35]
+    }
+}
+```
+## **Q What is Abstraction in java?**
+Abstraction in Java is a principle of Object-Oriented Programming (OOP) that focuses on hiding the complex implementation details and exposing only the essential features of an object or system. It allows a programmer to work with a simplified interface without needing to understand all the inner workings.
+
+In simpler terms, abstraction allows you to define what an object can do, without necessarily explaining how it does it.
+ 
+ **WHY IS ABSTRACTION IMPORTANT**
+- Simplification: It simplifies code for the user, as they don’t need to understand the internal details.
+- Maintainability: Helps in improving maintainability by isolating the complexities of the code.
+- Reusability: Promotes reusability of code by exposing only what is necessary and using abstract classes or interfaces for flexible design.
+- Security: It hides unnecessary details, thus protecting the data from external manipulation.
+
+ ### WAYS TO ACHIEVE ABSTRACTION
+ THERE ARE 2 MAIN WAYS TO ACHEIVE ABSTRACTION IN JAVA:Abstract class and Iterfaces.
+
+ -- ABSTRACT CLASS
+- An abstract class is a class that is declared with the abstract keyword. It cannot be instantiated directly and may contain both abstract methods (without implementation) and concrete methods (with implementation).
+- It provides partial abstraction because it can have both abstract and concrete methods.
+- An abstract class can have constructors, static methods, and final methods, which interfaces cannot have.
+ 
+```java
+abstract class Animal{
+//abstract method (no body,must be implemented by subclass)
+abstract void sound();
+
+//Concrete method(with body)
+void sleep(){
+System.out.println("Sleeping");
+
+}
+
+}
+
+class  Dog extends Animal{
+void sound(){
+   System.out.println("BHAW BHAW ");
+
+}
+
+}
+```
+Animal is an abstract class and the subclass Dog provides the actual immplementaion of the sound() method. The sleep() method is already implemented and inherited by subclasses.
+
+-- Interface
+- An interface is a reference type in Java, which is similar to a class but only contains abstract methods by default (before Java 8).
+- From Java 8, interfaces can have default methods (with implementation) and static methods.
+- From Java 9, interfaces can also have private methods.
+- An interface provides 100% abstraction (before Java 8), as it cannot have concrete methods.
+
+```java
+interface Vehicle {
+    // Abstract method
+    void drive();
+
+    // Default method (from Java 8)
+    default void start() {
+        System.out.println("Vehicle started");
+    }
+}
+
+class Car implements Vehicle {
+    public void drive() {
+        System.out.println("Car is driving");
+    }
+}
+```
+-- Real-World Example of Abstraction
+Consider a car. As a driver, you don't need to know the complex workings of the engine, transmission, or fuel system. All you need are a few simple abstractions: steering wheel, pedals, gear shift. These provide the necessary interface for you to drive, while the complexity remains hidden.
+
+In code, this is represented by defining methods such as drive(), brake(), and accelerate() in the abstract interface (class or interface), while the implementation of how these operations work is hidden in concrete classes like Sedan or SUV.
+
+
+-- Abstract Class: You want to share some common behavior (like sleeping for animals) but allow each class to provide its own specific functionality (like different animal sounds).
+-- Interface: You want to enforce a rule that all classes must do something (like drive) but leave it up to each class to decide how to do it.
+
+-- Abstract Class vs Interface: When to Use What?
+- Use abstract classes when:
+-- You want to share code among several related classes.
+-- You expect the base class to have some methods with implementation.
+- Use interfaces when:
+-- You expect classes from different hierarchies to implement a contract (e.g., Flyable, Drawable).
+-- You want to achieve multiple inheritance since a class can implement multiple interfaces, but can only extend one class.
+
+### Conclusion
+Abstraction is a key principle of OOP, enabling you to focus on what an object does rather than how it does it. Java provides abstraction through abstract classes and interfaces, each with specific use cases. Abstract classes allow partial abstraction, while interfaces provide full abstraction and are more flexible for defining contracts that multiple classes can follow.
+
+**CAN WE CREATE OBJECT OF THE ABSTRACT AND INTERFACE CLASS?**
+- No, you cannot create an object of an abstract class in Java. An abstract class is meant to provide a blueprint for other classes, and it may contain methods that are not fully implemented. Since abstract classes are incomplete (they can have abstract methods without bodies), creating an object of such a class would not make sense.You can’t directly instantiate an abstract class. Instead, you must create a subclass that extends the abstract class and provides concrete implementations for its abstract methods. Only then can you create objects of the subclass.
+
+```java
+abstract class Animal {
+    abstract void sound(); // Abstract method
+    void sleep() {
+        System.out.println("Sleeping...");
+    }
+}
+
+class Dog extends Animal {
+    void sound() {
+        System.out.println("Bark");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        // Animal animal = new Animal();  // Error: Cannot instantiate the abstract class 'Animal'
+
+        Animal dog = new Dog(); // Correct: Creating an object of the subclass 'Dog'
+        dog.sound(); // Output: Bark
+        dog.sleep(); // Output: Sleeping...
+    }
+}
+
+```
+- No, you cannot create an object of an interface in Java. An interface, like an abstract class, is a blueprint or a contract that defines certain behaviors (methods) without providing the implementation. Since an interface doesn’t provide concrete method bodies (except for default methods from Java 8 onward), creating an object of an interface would result in an incomplete object.Interfaces do not have the method implementations (before Java 8, they only had abstract methods), so there is no actual functionality to execute. Creating an object of an interface would mean creating something without behavior.
+
+```java
+interface Vehicle {
+    void drive(); // Abstract method
+}
+
+class Car implements Vehicle {
+    public void drive() {
+        System.out.println("Car is driving");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        // Vehicle vehicle = new Vehicle(); // Error: Cannot instantiate the interface 'Vehicle'
+
+        Vehicle myCar = new Car(); // Correct: Creating an object of a class that implements the interface
+        myCar.drive(); // Output: Car is driving
+    }
+}
+
+  ```
+*While you can't create a direct instance of an interface, you can use anonymous classes or lambda expressions (for functional interfaces) to provide a quick, one-time implementation of the interface.*
+
+Anonymous Class Example:
+```java
+Vehicle myVehicle = new Vehicle() {
+    public void drive() {
+        System.out.println("Anonymous vehicle is driving");
+    }
+};
+
+myVehicle.drive(); // Output: Anonymous vehicle is driving
+Lambda Expression Example (for Functional Interfaces):
+If the interface is a functional interface (i.e., it has exactly one abstract method), you can use a lambda expression in Java 8 and beyond:
+```
+```java
+@FunctionalInterface
+interface Vehicle {
+    void drive();
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Vehicle myVehicle = () -> System.out.println("Lambda vehicle is driving");
+        myVehicle.drive(); // Output: Lambda vehicle is driving
+    }
+}
+```
+## NOTE(AGAIN)
+Even though abstract classes and interfaces seem similar after Java 8 (since interfaces can now have default methods with implementations), they still serve different purposes and have key differences. Here's why both are still useful and when to use each:
+
+- 1. Abstract Classes: Use When You Want to Share State (Fields/Variables) and Behavior
+Abstract classes can have both methods with implementation and instance variables (fields).
+They are useful when you want to share both behavior and state across related classes. For example, if you have common fields like name, age, or speed that should be shared by all subclasses, an abstract class is the right choice.
+Abstract classes represent a "is-a" relationship. For example, a Dog is-a Animal, so Dog would inherit from the abstract class Animal.
+Key Difference:
+
+Abstract classes allow you to define fields (variables) and methods that subclasses will inherit.
+Example:
+
+```java
+abstract class Animal {
+    String name;  // Field (state)
+    
+    abstract void sound();  // Abstract method
+    
+    void eat() {  // Concrete method
+        System.out.println(name + " is eating");
+    }
+}
+In this example, name is a field, and subclasses will inherit this field along with the eat() method.
+
+2. Interfaces: Use to Define Behavior that Can Be Shared by Unrelated Classes
+Interfaces define a contract for behavior that can be shared by unrelated classes. For example, a Car and a Bird can both implement an interface like Flyable or Movable, even though they don't share any common state or inheritance hierarchy.
+They allow you to specify "what something can do", without dictating how it should do it.
+Interfaces enable multiple inheritance, meaning a class can implement multiple interfaces, but a class can only extend one abstract class.
+Key Difference:
+
+Interfaces focus on what behavior the class must provide, and don't store any state (fields).
+```
+Example:
+```
+java
+interface Flyable {
+    void fly();
+}
+
+class Bird implements Flyable {
+    public void fly() {
+        System.out.println("Bird is flying");
+    }
+}
+
+class Airplane implements Flyable {
+    public void fly() {
+        System.out.println("Airplane is flying");
+    }
+}
+Here, both Bird and Airplane implement Flyable, even though they are completely different types of objects.
+```
+Why Use Both?
+- Abstract Class: Use when classes are related (part of a class hierarchy) and you need to share both behavior and state (fields/variables).
+- Interface: Use when you want to define behavior (a set of methods) that can apply to different, unrelated classes. Interfaces are also useful when you need multiple inheritance.
+In Simple Terms:
+- Abstract Class: Use when you need to share common code and variables among classes that are closely related.
+- Interface: Use when you need to define a set of methods that can be implemented by unrelated classes and allow multiple inheritance.
+
+## WHY ABSTRACT CLASS HAS CONTRUCTOR AND INTERFACE DOES NOT HAVE 
+An abstract class can have a constructor in Java because its constructor is used to initialize common fields and setup state when a subclass is created. While you cannot instantiate the abstract class directly, its constructor is called when an object of a subclass is created.
+
+In Short:
+Purpose of Constructor in Abstract Class: It helps initialize the fields of the abstract class that the subclass can inherit. When a subclass object is created, it first calls the abstract class constructor to initialize shared properties before handling subclass-specific initialization.
+Example:
+
+```java
+abstract class Animal {
+    String name;
+    
+    // Abstract class constructor
+    Animal(String name) {
+        this.name = name;
+    }
+}
+
+class Dog extends Animal {
+    Dog(String name) {
+        super(name);  // Calls abstract class constructor
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Dog dog = new Dog("Buddy");  // Abstract class constructor is called first
+        System.out.println(dog.name);  // Output: Buddy
+    }
+}
+```
+Here, the abstract class Animal has a constructor that sets the name, and it's called when a Dog object is created.
+
+-- An interface does not have a constructor because it is meant to define only behavior (methods) and not to hold any state (instance variables) that would need to be initialized.
+
+In Short:
+- Interfaces cannot hold state: Interfaces are purely for defining contracts (methods) that classes must implement, so there’s no need to initialize anything. Since there's no state (fields) in interfaces, constructors, which are meant for initializing objects, are unnecessary.
+- Implementation happens in classes: The actual class that implements the interface is responsible for any necessary initialization, including any fields.
+Thus, constructors are not needed in interfaces since they don't create objects or maintain state.
+
