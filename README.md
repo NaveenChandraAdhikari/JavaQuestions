@@ -1932,7 +1932,7 @@ Here, the abstract class Animal has a constructor that sets the name, and it's c
 
 In Short:
 - Interfaces cannot hold state: Interfaces are purely for defining contracts (methods) that classes must implement, so there’s no need to initialize anything. Since there's no state (fields) in interfaces, constructors, which are meant for initializing objects, are unnecessary.
-- Implementation happens in classes: The actual class that implements the interface is responsible for any necessary initialization, including any fields.
+- Implementation happens in classes: The actual class that implements the interface is responsibleme for any necessary initialization, including any fields.
 Thus, constructors are not needed in interfaces since they don't create objects or maintain state.
 
 **## Q Java supports multithreading ?** 
@@ -1946,5 +1946,112 @@ Java supports multithreading to improve performance, resource utilization, and r
 Java provides built-in multithreading support via the Thread class, Executor framework, and parallel streams for handling enterprise-level tasks.
 
 
+ ## **Q What is method overloading and method overriding ?**
+ 
+Method Overloading vs Method Overriding are key concepts in polymorphism in object-oriented programming (OOP). They relate to how methods with the same name can be used in different ways in classes, either at compile time or runtime.
+
+-- 1. Method Overloading (Compile-time Polymorphism)
+Method overloading occurs when multiple methods in the same class have the same name but different parameters (different type, number, or both). The method that gets called is determined at compile time based on the method signature (the number and type of arguments passed).
+
+-- Key points:
+- Same method name but different parameter lists.
+- Happens within the same class.
+- The compiler determines which method to call based on the method signature.
+- This is an example of compile-time polymorphism (also called static polymorphism).
+-- Example of Method Overloading:
+```java
+
+class Calculator {
+    // Overloaded method for adding integers
+    public int add(int a, int b) {
+        return a + b;
+    }
+
+    // Overloaded method for adding doubles
+    public double add(double a, double b) {
+        return a + b;
+    }
+
+    // Overloaded method for adding three integers
+    public int add(int a, int b, int c) {
+        return a + b + c;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Calculator calc = new Calculator();
+
+        System.out.println(calc.add(10, 20));           // Calls the method with two int parameters
+        System.out.println(calc.add(5.5, 7.3));         // Calls the method with two double parameters
+        System.out.println(calc.add(10, 20, 30));       // Calls the method with three int parameters
+    }
+}
+```
+In the above example, the method add is overloaded three times with different parameters. The decision of which method to call is made by the compiler, hence this is compile-time polymorphism.
+
+
+Method Overloading vs Method Overriding are key concepts in polymorphism in object-oriented programming (OOP). They relate to how methods with the same name can be used in different ways in classes, either at compile time or runtime. Let's break down each concept and relate them to polymorphism types:
+
+1. Method Overloading (Compile-time Polymorphism)
+Method overloading occurs when multiple methods in the same class have the same name but different parameters (different type, number, or both). The method that gets called is determined at compile time based on the method signature (the number and type of arguments passed).
+
+-- Key points:
+- Same method name but different parameter lists.
+- Happens within the same class.
+- The compiler determines which method to call based on the method signature.
+- This is an example of compile-time polymorphism (also called static polymorphism).
+-- Example of Method Overloading:
+```
+class Calculator {
+    // Overloaded method for adding integers
+    public int add(int a, int b) {
+        return a + b;
+    }
+
+    // Overloaded method for adding doubles
+    public double add(double a, double b) {
+        return a + b;
+    }
+
+    // Overloaded method for adding three integers
+    public int add(int a, int b, int c) {
+        return a + b + c;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Calculator calc = new Calculator();
+
+        System.out.println(calc.add(10, 20));           // Calls the method with two int parameters
+        System.out.println(calc.add(5.5, 7.3));         // Calls the method with two double parameters
+        System.out.println(calc.add(10, 20, 30));       // Calls the method with three int parameters
+    }
+}
+```
+In the above example, the method add is overloaded three times with different parameters. The decision of which method to call is made by the compiler, hence this is compile-time polymorphism.
+
+-- 2. Method Overriding (Run-time Polymorphism)
+Method overriding occurs when a subclass provides a specific implementation of a method that is already defined in its superclass. The method in the subclass must have the same signature (name, return type, and parameters) as the method in the superclass.
+
+The method that gets called is determined at runtime, based on the object type (not the reference type).
+
+Key points:
+- Same method signature in both superclass and subclass.
+- Happens in an inheritance hierarchy (between parent and child classes).
+- The method to be executed is determined at runtime based on the object's actual type.
+- This is an example of runtime polymorphism (also called dynamic polymorphism).
+
+### Comparison: Method Overloading vs Method Overriding
+
+| **Aspect**            | **Method Overloading**                       | **Method Overriding**                     |
+|-----------------------|----------------------------------------------|-------------------------------------------|
+| **Type of Polymorphism** | Compile-time (static) polymorphism          | Runtime (dynamic) polymorphism            |
+| **Method Signature**   | Same method name but different parameters    | Same method name, same parameters         |
+| **Return Type**        | Can be different                             | Must be the same                          |
+| **Classes Involved**   | Happens within the same class                | Involves superclass and subclass          |
+| **Binding**            | Early binding (at compile time)              | Late binding (at runtime)                 |
+| **Use Case**           | Used to increase readability and flexibility | Used to provide specific behavior for subclass |
 
 
