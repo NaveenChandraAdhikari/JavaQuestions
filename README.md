@@ -1163,7 +1163,7 @@ Example of a Custom Exception:
 
 Let’s create a custom exception InvalidAgeException, which is thrown when a user's age is invalid (e.g., below 18).
 
-java
+```java
 
 // Custom checked exception
 class InvalidAgeException extends Exception {
@@ -1191,6 +1191,7 @@ public class CustomExceptionExample {
         }
     }
 }
+```
 
 Output:
 
@@ -2053,5 +2054,40 @@ Key points:
 | **Classes Involved**   | Happens within the same class                | Involves superclass and subclass          |
 | **Binding**            | Early binding (at compile time)              | Late binding (at runtime)                 |
 | **Use Case**           | Used to increase readability and flexibility | Used to provide specific behavior for subclass |
+
+
+## **Collection vs Collections ?**
+- 1. Collection (Interface):
+-- What it is:
+- Collection is a root interface in the Java Collections Framework.
+- It represents a group of objects, known as elements, and defines the basic methods that every collection class should have (e.g., List, Set, and Queue all extend from this interface).
+-- Key Points:
+- It is part of the java.util package.
+- It provides methods like add(), remove(), size(), isEmpty(), and more for managing elements.
+- Collection is a more generic interface, while its subinterfaces (e.g., List, Set, Queue) provide more specific behavior.
+```java
+// Example of Collection usage
+Collection<String> collection = new ArrayList<>();
+collection.add("Hello");
+collection.add("World");
+```
+
+- 2. Collections (Utility Class):
+-- What it is:
+- Collections is a utility class in the java.util package.
+- It consists exclusively of static methods that operate on or return collections (like sorting, searching, reversing, etc.).
+-- Key Points:
+- Provides utility methods for common tasks such as sort(), reverse(), shuffle(), max(), min(), and more.
+- Often used for performing operations on a collection, like sorting a List or making a collection read-only or synchronized.
+- It also provides methods to create empty or singleton collections.
+```java
+// Example of Collections usage
+List<Integer> numbers = Arrays.asList(3, 5, 1, 2, 4);
+Collections.sort(numbers);  // Sorting the list
+Collections.reverse(numbers);  // Reversing the list
+```
+- Conclusion:
+Collection is an interface that defines the standard operations that can be performed on a group of objects.
+Collections is a utility class that provides helpful methods for manipulating and processing collections.
 
 
