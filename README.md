@@ -2090,4 +2090,292 @@ Collections.reverse(numbers);  // Reversing the list
 Collection is an interface that defines the standard operations that can be performed on a group of objects.
 Collections is a utility class that provides helpful methods for manipulating and processing collections.
 
+## Q **String vs StringBuilder vs StringBuffer**
+- 1. String (Immutable)
+-- Nature: The String class in Java is immutable. This means once a String object is created, its value cannot be changed. Every time you perform an operation on a string (like concatenation or substring), a new String object is created in memory.
+-- Use Case: Use String when you have a fixed string value, or when the number of modifications is very low. It's great for read-only or fixed values.
+-- Efficiency: Inefficient if you are making multiple modifications (like concatenation in loops), because each change creates a new object.
+-- Thread Safety: Strings are inherently thread-safe because they are immutable (cannot be modified).
+```java
+String str = "Hello";
+str = str + " World";  // This creates a new String object, "Hello World", and the old "Hello" is discarded
+```
 
+- 2. StringBuilder (Mutable, Not Thread-Safe)
+-- Nature: The StringBuilder class is mutable. This means that when you modify a StringBuilder object (e.g., append text), the same object is modified without creating a new object.
+-- Use Case: Use StringBuilder when you need to perform a lot of string modifications (such as concatenation in loops), but thread-safety is not a concern. It is the most efficient option in single-threaded environments.
+-- Efficiency: Much more efficient than String for scenarios where strings are modified frequently, as it doesn't create new objects for every modification.
+-- Thread Safety: Not thread-safe. If used in a multi-threaded environment without proper synchronization, it could cause issues.
+```java
+StringBuilder sb = new StringBuilder("Hello");
+sb.append(" World");  // This modifies the original StringBuilder object
+```
+- 3. StringBuffer (Mutable, Thread-Safe)
+-- Nature: Like StringBuilder, StringBuffer is also mutable. However, it is thread-safe because it is synchronized, meaning it is designed to be safely used in a multi-threaded environment.
+-- Use Case: Use StringBuffer when you need a mutable string in a multi-threaded environment where multiple threads may access and modify the same string object.
+-- Efficiency: Slightly less efficient than StringBuilder due to the overhead of synchronization, but still much better than String for heavy string modification.
+-- Thread Safety: Thread-safe because methods of StringBuffer are synchronized. This ensures that only one thread can modify the StringBuffer object at a time, making it safe in multi-threaded contexts.
+```java
+StringBuffer sbf = new StringBuffer("Hello");
+sbf.append(" World");  // This modifies the original StringBuffer object safely in a multi-threaded context
+```
+
+
+# String vs StringBuilder vs StringBuffer in Java
+
+## Key Differences
+
+| **Feature**          | **String**             | **StringBuilder**        | **StringBuffer**        |
+|----------------------|------------------------|--------------------------|-------------------------|
+| **Mutability**        | Immutable              | Mutable                   | Mutable                  |
+| **Thread Safety**     | Thread-safe            | Not thread-safe           | Thread-safe (synchronized)|
+| **Performance**       | Slower with many changes | Faster (no synchronization) | Slower than StringBuilder due to synchronization |
+| **Use Case**          | Fixed or few changes   | Single-threaded, many changes | Multi-threaded, many changes |
+| **Synchronization**   | No                     | No                        | Yes                      |
+
+## When to Use Each
+
+- **String**: Use when the string content is fixed or changes rarely. It is immutable, so it's memory efficient for small, unchanging strings.
+- **StringBuilder**: Use in single-threaded scenarios where you need to modify strings frequently, such as in loops or dynamic concatenation. It’s fast because it doesn’t involve synchronization.
+- **StringBuffer**: Use in multi-threaded applications when you need to modify strings frequently and need thread-safety.
+
+## Example Usage
+
+### Inefficient with String (due to immutability)
+
+```java
+String result = "";
+for (int i = 0; i < 1000; i++) {
+    result += i;  // Creates a new String object with each iteration
+}
+```
+### Efficient with StringBuilder (mutable)
+```java
+Copy code
+StringBuilder sb = new StringBuilder();
+for (int i = 0; i < 1000; i++) {
+    sb.append(i);  // Modifies the existing object
+}
+```
+### Efficient with StringBuffer (thread-safe, synchronized)
+```java
+Copy code
+StringBuffer sbf = new StringBuffer();
+for (int i = 0; i < 1000; i++) {
+    sbf.append(i);  // Safe to use in multi-threaded environments
+}
+```
+
+## **Q: throw vs throws keyword**
+- 1. throw
+--  Purpose: throw is used to explicitly throw an exception from a method or any block of code.
+--  Usage: You use throw when you want to signal that an exception has occurred and needs to be handled. It is typically followed by an instance of an exception.
+--  Scope: It is used inside a method and can throw both checked and unchecked exceptions.
+```java
+public class Example {
+    public static void main(String[] args) {
+        try {
+            // Throwing an exception explicitly
+            throw new ArithmeticException("Division by zero error");
+        } catch (ArithmeticException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
+In this case, the throw keyword manually triggers an ArithmeticException when a certain condition is met.
+```
+- 2. throws
+-- Purpose: throws is used in a method signature to declare that a method can potentially throw one or more exceptions. It informs the calling code that it must handle or propagate the declared exceptions.
+-- Usage: You place throws after the method name and before the exception types that might be thrown by the method.
+-- Scope: Used to declare exceptions that can occur in a method and indicate to the caller that it needs to handle these exceptions.
+```java
+public class Example {
+    // Declaring that this method might throw an IOException
+    public void readFile() throws IOException {
+        // Code that might throw an IOException
+        FileReader file = new FileReader("nonexistentfile.txt");
+    }
+
+    public static void main(String[] args) {
+        Example ex = new Example();
+        try {
+            // Handling the exception
+            ex.readFile();
+        } catch (IOException e) {
+            System.out.println("An error occurred: " + e.getMessage());
+        }
+    }
+}
+In this case, throws IOException declares that the readFile() method can throw an IOException, and it needs to be handled by the caller.
+```
+# Key Differences Between `throw` and `throws` in Java
+
+## Key Differences:
+
+| **Feature**           | **`throw`**                                        | **`throws`**                                 |
+|-----------------------|----------------------------------------------------|----------------------------------------------|
+| **Purpose**           | Used to explicitly throw an exception.             | Used to declare that a method might throw exceptions. |
+| **Usage**             | Inside the method, followed by an instance of an exception. | In the method signature, followed by one or more exception types. |
+| **Exception Type**    | Can throw a specific instance of any exception (checked or unchecked). | Declares checked exceptions that the method might throw. |
+| **Position**          | Used inside a method.                              | Used in the method declaration.              |
+| **Handling**          | Requires an explicit instance to be thrown manually. | Informs the caller that it must handle the declared exceptions. |
+
+## Example Summary:
+
+### `throw`: 
+Used to actually throw an exception during runtime.
+
+```java
+throw new NullPointerException("Null value encountered");
+
+```
+throws:Used to declare that a method can throw certain exceptions, and it must be handled when calling the method.
+```java
+public void method() throws IOException {
+    // method logic
+}
+```
+- Conclusion:
+throw is used inside a method to trigger an exception.
+throws is used in a method signature to declare that the method could throw exceptions, signaling to the caller that they need to handle them.
+
+## **Q HashMap vs HashTable ?**
+
+- 1. HashMap
+Introduced in: Java 1.2 (part of the Java Collections Framework).
+
+Thread-Safety: Not synchronized, meaning it is not thread-safe. Multiple threads can access and modify a HashMap concurrently without proper synchronization, which can lead to inconsistent behavior.
+
+Performance: Faster compared to Hashtable because it is unsynchronized. No overhead of synchronization makes HashMap ideal for single-threaded or non-concurrent use.
+
+Null Handling: Allows one null key and multiple null values.
+
+```java
+HashMap<String, String> map = new HashMap<>();
+map.put(null, "value");        // Allows null key
+map.put("key", null);          // Allows null value
+Use Case: Best suited for non-threaded environments where high performance is required and thread safety is not a concern.
+```
+
+- 2. Hashtable
+Introduced in: Java 1.0 (part of the original Java API, before the Collections Framework).
+
+Thread-Safety: Synchronized, meaning it is thread-safe. All methods in Hashtable are synchronized, so only one thread can access or modify the Hashtable at a time.
+
+Performance: Slower compared to HashMap due to synchronization overhead. Each method is synchronized to ensure thread safety, which makes Hashtable slower in multi-threaded environments.
+
+Null Handling: Does not allow null keys or null values. If you attempt to insert a null key or value, it will throw a NullPointerException.
+
+```java
+Hashtable<String, String> table = new Hashtable<>();
+// table.put(null, "value");     // Throws NullPointerException
+// table.put("key", null);       // Throws NullPointerException
+Use Case: Should be used when thread safety is needed in legacy applications. However, it is generally considered obsolete for most new code since there are better alternatives like ConcurrentHashMap.
+```
+# Key Differences Between `HashMap` and `Hashtable` in Java
+
+## Key Differences:
+
+| **Feature**           | **`HashMap`**                                 | **`Hashtable`**                              |
+|-----------------------|-----------------------------------------------|----------------------------------------------|
+| **Thread-Safety**      | Not synchronized (not thread-safe)            | Synchronized (thread-safe)                   |
+| **Performance**        | Faster due to no synchronization              | Slower due to synchronization overhead       |
+| **Null Handling**      | Allows one `null` key and multiple `null` values | Does not allow `null` keys or `null` values  |
+| **Legacy or Modern**   | Part of Java Collections Framework (modern)   | Legacy class (pre-Collections Framework)     |
+| **Use Case**           | Single-threaded or non-concurrent environments | Legacy multi-threaded environments           |
+
+## Important Points to Mention:
+
+### Synchronization:
+- **Hashtable** is synchronized, which makes it slower but thread-safe.
+- **HashMap** is not synchronized, but you can make it thread-safe by using `Collections.synchronizedMap()` or by using `ConcurrentHashMap`.
+
+### Performance:
+- If you do not need thread safety, **HashMap** is generally preferred due to its better performance.
+- If thread safety is required in concurrent environments, consider using **`ConcurrentHashMap`** instead of `Hashtable`, as it offers better concurrency without locking the entire map.
+
+### Null Handling:
+- **HashMap** allows `null` keys and values.
+- **Hashtable** does **not** allow `null` keys or values.
+
+## Example of Thread-Safe `HashMap` using `Collections.synchronizedMap`:
+
+```java
+Map<String, String> synchronizedMap = Collections.synchronizedMap(new HashMap<>());
+```
+--  Conclusion:
+- Use HashMap when you need a high-performance, unsynchronized implementation for single-threaded or non-concurrent use cases.
+- Use Hashtable only if you are working on legacy code that requires thread safety, though in most modern applications, you should prefer ConcurrentHashMap for better concurrency management.
+
+
+## ** Q: final vs finally vs finallize**
+
+- 1. final
+-- Purpose: The final keyword is used to declare constants in Java. It can be applied to variables, methods, and classes.
+-- Usage: Final Variables: Once assigned, their values cannot be changed.
+
+```java
+final int MAX_VALUE = 100;
+// MAX_VALUE = 200; // This will cause a compilation error
+Final Methods: Cannot be overridden by subclasses.
+```
+```java
+class Parent {
+    final void display() {
+        System.out.println("This is a final method.");
+    }
+}
+Final Classes: Cannot be subclassed.
+```
+```java
+final class FinalClass {
+    // Class code
+}
+```
+- 2. finally
+-- Purpose: The finally block is used in exception handling. It defines a block of code that will always execute after a try block, regardless of whether an exception is thrown or caught.
+-- Usage: It is typically used for cleanup activities like closing resources (e.g., file streams, database connections).
+
+```java
+try {
+    // Code that may throw an exception
+    int result = 10 / 0; // This will throw ArithmeticException
+} catch (ArithmeticException e) {
+    System.out.println("Exception caught: " + e.getMessage());
+} finally {
+    System.out.println("This will always execute.");
+}
+In this example, even if an exception occurs, the finally block will run.
+```
+- 3. finalize
+-- Purpose: The finalize() method is part of Java’s garbage collection mechanism. It is called by the garbage collector on an object when garbage collection determines that there are no more references to the object.
+-- Usage: You can override this method to perform cleanup operations before the object is destroyed, such as releasing resources. However, it's important to note that relying on finalize() is generally discouraged in modern Java due to its unpredictability and potential performance issues.
+
+```java
+class MyClass {
+    @Override
+    protected void finalize() throws Throwable {
+        try {
+            // Cleanup code before garbage collection
+            System.out.println("Cleaning up resources.");
+        } finally {
+            super.finalize();
+        }
+    }
+}
+```
+# Key Differences Between `final`, `finally`, and `finalize` in Java
+
+## Key Differences:
+
+| **Feature**      | **`final`**                                | **`finally`**                               | **`finalize`**                            |
+|-------------------|--------------------------------------------|--------------------------------------------|-------------------------------------------|
+| **Purpose**       | Used to declare constants (variables, methods, classes). | Used to define a block of code that executes after a `try` block. | Used for cleanup before an object is garbage collected. |
+| **Context**       | Can be used with variables, methods, and classes. | Used in exception handling.                | Used in the context of garbage collection. |
+| **Execution**     | Not related to execution flow.            | Always executes after `try` and `catch`.  | Executed by the garbage collector.       |
+| **Overriding**    | Cannot override final methods.            | Not applicable.                            | Can be overridden in a class.            |
+
+## Conclusion:
+- **`final`**: Use when you want to create constants or prevent inheritance/overriding.
+- **`finally`**: Use in exception handling to ensure that specific code runs after a `try` block, regardless of whether an exception occurred.
+- **`finalize`**: Use with caution for cleanup before an object is collected by the garbage collector, but consider alternative cleanup mechanisms, such as **try-with-resources** for managing resources.
